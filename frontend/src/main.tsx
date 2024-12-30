@@ -1,13 +1,22 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
 import './index.css'
-import App from './App'
+import 'leaflet/dist/leaflet.css'
+import './styles/leaflet.css'
+import { WagmiProvider } from './providers/WagmiProvider'
+import { ThemeProvider } from './providers/ThemeProvider'
+import { Buffer } from 'buffer'
 
-const rootElement = document.getElementById('root');
-if (rootElement) {
-  createRoot(rootElement).render(
-  <StrictMode>
-    <App />
-   </StrictMode>
- );
-}
+// Polyfill Buffer for viem
+window.Buffer = Buffer
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <WagmiProvider>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    </WagmiProvider>
+  </React.StrictMode>,
+)

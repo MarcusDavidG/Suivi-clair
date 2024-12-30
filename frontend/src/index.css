@@ -2,4 +2,123 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Add any additional custom styles below */
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark mode transitions */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Base styles */
+@layer base {
+  body {
+    @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-white;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+/* Component styles */
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-semibold transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply bg-orange-500 text-white hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden;
+  }
+
+  .card-header {
+    @apply px-6 py-4 border-b border-gray-200 dark:border-gray-700;
+  }
+
+  .card-body {
+    @apply px-6 py-4;
+  }
+
+  .card-footer {
+    @apply px-6 py-4 border-t border-gray-200 dark:border-gray-700;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
+           bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+           focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-600;
+  }
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: .8;
+    transform: scale(1.1);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Map styles */
+.mapboxgl-map {
+  @apply rounded-lg overflow-hidden;
+}
+
+.mapboxgl-ctrl-group {
+  @apply !bg-white dark:!bg-gray-800 !border-gray-200 dark:!border-gray-700;
+}
+
+.mapboxgl-ctrl button {
+  @apply !bg-white dark:!bg-gray-800 !text-gray-900 dark:!text-white;
+}
+
+.mapboxgl-popup-content {
+  @apply !bg-white dark:!bg-gray-800 !text-gray-900 dark:!text-white !border-0 !rounded-lg !shadow-lg;
+}
+
+.mapboxgl-popup-tip {
+  @apply !border-t-white dark:!border-t-gray-800;
+}
