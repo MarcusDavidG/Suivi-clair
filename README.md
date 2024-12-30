@@ -55,7 +55,7 @@ npm run dev
 The frontend is built with:
 - React + Vite for fast development
 - TailwindCSS for styling
-- Starknet.js for blockchain interactions (to be added)
+- Starknet.js for blockchain interactions
 
 ### Smart Contract Development
 
@@ -94,3 +94,25 @@ Smart Contracts are built with:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details
+
+## Tailwind CSS Setup
+
+This project uses Tailwind CSS for styling. Ensure you have the following in your project:
+
+1. Tailwind CSS installed:
+   ```bash
+   npm install -D tailwindcss postcss autoprefixer
+   ```
+
+2. Tailwind configuration files:
+   - `tailwind.config.js`
+   - `postcss.config.js`
+
+3. Include Tailwind's directives in your CSS:
+   ```css
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+   ```
+
+Make sure to follow the setup instructions for Tailwind CSS to ensure proper styling in your application.
