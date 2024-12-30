@@ -1,0 +1,99 @@
+@import 'mapbox-gl/dist/mapbox-gl.css';
+
+.mapboxgl-map {
+  width: 100%;
+  height: 100%;
+}
+
+.mapboxgl-popup {
+  max-width: 300px;
+}
+
+.mapboxgl-popup-content {
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-0 rounded-lg shadow-lg border-0;
+}
+
+.mapboxgl-popup-tip {
+  @apply border-t-white dark:border-t-gray-800;
+}
+
+.mapboxgl-popup-close-button {
+  @apply text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2;
+}
+
+.mapboxgl-ctrl-group {
+  @apply !bg-white dark:!bg-gray-800 !border-gray-200 dark:!border-gray-700;
+}
+
+.mapboxgl-ctrl button {
+  @apply !bg-white dark:!bg-gray-800 !text-gray-900 dark:!text-white;
+}
+
+.mapboxgl-ctrl button:hover {
+  @apply !bg-gray-100 dark:!bg-gray-700;
+}
+
+.mapboxgl-ctrl button.active {
+  @apply !bg-orange-500 !text-white;
+}
+
+.mapboxgl-ctrl-attrib {
+  @apply !bg-white/75 dark:!bg-gray-800/75 !text-gray-600 dark:!text-gray-400;
+}
+
+.mapboxgl-ctrl-attrib a {
+  @apply !text-orange-500 hover:!text-orange-600;
+}
+
+/* Custom marker styles */
+.marker {
+  transition: transform 0.2s;
+}
+
+.marker:hover {
+  transform: scale(1.2);
+}
+
+/* Custom popup styles */
+.mapboxgl-popup-content h3 {
+  @apply text-lg font-bold mb-1;
+}
+
+.mapboxgl-popup-content p {
+  @apply text-sm;
+}
+
+/* Custom loading overlay */
+.map-loading {
+  @apply absolute inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center;
+}
+
+.map-loading-spinner {
+  @apply animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500;
+}
+
+/* Custom error overlay */
+.map-error {
+  @apply absolute inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center;
+}
+
+.map-error-content {
+  @apply max-w-md mx-auto p-6 bg-red-100 dark:bg-red-900 rounded-lg;
+}
+
+.map-error-message {
+  @apply text-red-700 dark:text-red-100;
+}
+
+/* Custom no-data overlay */
+.map-no-data {
+  @apply absolute inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center;
+}
+
+.map-no-data-content {
+  @apply max-w-md mx-auto p-6 bg-gray-100 dark:bg-gray-800 rounded-lg;
+}
+
+.map-no-data-message {
+  @apply text-gray-700 dark:text-gray-300;
+}

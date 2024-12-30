@@ -1,0 +1,38 @@
+@import 'leaflet/dist/leaflet.css';
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-0 rounded-lg shadow-lg border-0;
+}
+
+.leaflet-popup-tip {
+  @apply bg-white dark:bg-gray-800;
+}
+
+.leaflet-popup-close-button {
+  @apply text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2;
+}
+
+.leaflet-control-zoom {
+  @apply !bg-white dark:!bg-gray-800 !border-gray-200 dark:!border-gray-700;
+}
+
+.leaflet-control-zoom a {
+  @apply !bg-white dark:!bg-gray-800 !text-gray-900 dark:!text-white;
+}
+
+.leaflet-control-zoom a:hover {
+  @apply !bg-gray-100 dark:!bg-gray-700;
+}
+
+.leaflet-control-attribution {
+  @apply !bg-white/75 dark:!bg-gray-800/75 !text-gray-600 dark:!text-gray-400;
+}
+
+.leaflet-control-attribution a {
+  @apply !text-orange-500 hover:!text-orange-600;
+}
