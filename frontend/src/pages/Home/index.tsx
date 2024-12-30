@@ -7,7 +7,7 @@ import Groundshipping from "../../assets/Groundshipping.jpg";
 import Railfreight from "../../assets/Railfreight.jpg";
 import Seafreight from "../../assets/Seafreight.jpg";
 
-export function Home() {
+export function Home(){
   const { address } = useBlockRoute();
   const images = [Roadfreight, Groundshipping, Railfreight, Seafreight];
   const [currentIndex, setCurrentIndex] = useState(0);
