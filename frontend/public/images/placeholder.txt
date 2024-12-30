@@ -1,0 +1,14 @@
+This directory contains placeholder images for the BlockRoute application:
+
+1. road-freight.jpg - Image representing road transportation
+2. ground-shipping.jpg - Image representing ground shipping services
+3. railway-freight.jpg - Image representing railway transportation
+4. sea-freight.jpg - Image representing sea freight services
+
+Note: Replace these placeholder images with actual high-quality images for production use.
+
+Image requirements:
+- Recommended size: 800x600 pixels
+- Format: JPG or WebP
+- Aspect ratio: 4:3
+- File size: Optimize for web (< 200KB per image)

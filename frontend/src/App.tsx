@@ -1,27 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Navbar } from "./components/shared/Navbar";
-import { Footer } from "./components/shared/Footer";
-import { Suspense, lazy } from "react";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Navbar } from './components/shared/Navbar'
+import { Footer } from './components/shared/Footer'
+import { Suspense, lazy } from 'react'
 
 // Import Home component directly since it's the main landing page
-import { Home } from "./pages/Home";
+import { Home } from './pages/Home'
 
 // Lazy load other pages
-const CreateShipment = lazy(() =>
-  import("./pages/CreateShipment").then((module) => ({
-    default: module.default,
-  }))
-);
-const Dashboard = lazy(() =>
-  import("./pages/Dashboard").then((module) => ({
-    default: module.default,
-  }))
-);
-const TrackShipment = lazy(() =>
-  import("./pages/TrackShipment").then((module) => ({
-    default: module.default,
-  }))
-);
+const CreateShipment = lazy(() => import('./pages/CreateShipment').then(module => ({ 
+  default: module.default 
+})))
+const Dashboard = lazy(() => import('./pages/Dashboard').then(module => ({ 
+  default: module.default 
+})))
+const TrackShipment = lazy(() => import('./pages/TrackShipment').then(module => ({ 
+  default: module.default 
+})))
 
 // Loading component for page transitions
 const PageLoader = () => (
@@ -31,7 +25,7 @@ const PageLoader = () => (
       <p className="text-gray-600 dark:text-gray-400">Loading...</p>
     </div>
   </div>
-);
+)
 
 function App() {
   return (
@@ -51,7 +45,7 @@ function App() {
         <Footer />
       </div>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App
