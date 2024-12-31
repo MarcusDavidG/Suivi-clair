@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useBlockRoute } from "../../hooks/useBlockRoute";
 import { WalletButton } from "../../components/shared/ConnectWallet";
+import { StarkNetConnectWallet } from "../../components/shared/StarkNetConnectWallet";
 import Roadfreight from "../../assets/Roadfreight.jpg";
 import Groundshipping from "../../assets/Groundshipping.jpg";
 import Railfreight from "../../assets/Railfreight.jpg";

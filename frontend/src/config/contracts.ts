@@ -367,7 +367,7 @@ export const BLOCKROUTE_ABI = [
     ],
     "name": "updateShipmentStatus",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "state_mutability": "nonpayable",
     "type": "function"
   },
   {
@@ -390,7 +390,109 @@ export const BLOCKROUTE_ABI = [
     ],
     "name": "updateTemperatureAndHumidity",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "state_mutability": "nonpayable",
     "type": "function"
+  }
+] as const;
+
+export const SUIVICLAIR_ADDRESS = '0x05770edb03346b7d7d2db42c31b3046cb26dde222ee62f8152da75fb0b872473' as const;
+
+export const SUIVICLAIR_ABI = [
+  {
+    "name": "SuiviClairImpl",
+    "type": "impl",
+    "interface_name": "suiviclair::ISuiviClair"
+  },
+  {
+    "name": "core::byte_array::ByteArray",
+    "type": "struct",
+    "members": [
+      {
+        "name": "data",
+        "type": "core::array::Array::<core::bytes_31::bytes31>"
+      },
+      {
+        "name": "pending_word",
+        "type": "core::felt252"
+      },
+      {
+        "name": "pending_word_len",
+        "type": "core::integer::u32"
+      }
+    ]
+  },
+  {
+    "name": "suiviclair::Shipment",
+    "type": "struct",
+    "members": [
+      {
+        "name": "product_name",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "product_description",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "location_origin",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "location_destination",
+        "type": "core::byte_array::ByteArray"
+      }
+    ]
+  },
+  {
+    "name": "suiviclair::ISuiviClair",
+    "type": "interface",
+    "items": [
+      {
+        "name": "create_shipment",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "product_name",
+            "type": "core::byte_array::ByteArray"
+          },
+          {
+            "name": "product_description",
+            "type": "core::byte_array::ByteArray"
+          },
+          {
+            "name": "location_origin",
+            "type": "core::byte_array::ByteArray"
+          },
+          {
+            "name": "location_destination",
+            "type": "core::byte_array::ByteArray"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "track_shipment",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "shipment_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "suiviclair::Shipment"
+          }
+        ],
+        "state_mutability": "external"
+      }
+    ]
+  },
+  {
+    "kind": "enum",
+    "name": "suiviclair::SuiviClair::Event",
+    "type": "event",
+    "variants": []
   }
 ] as const;
