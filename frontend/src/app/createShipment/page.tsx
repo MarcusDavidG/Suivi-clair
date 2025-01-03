@@ -1,11 +1,82 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAccount } from '@starknet-react/core';
+import { useAccount, useContract } from '@starknet-react/core';
+import { ByteArray } from 'starknet';
+import {
+  RpcClient,
+  JsonRpcClient,
+  RpcMutateParams,
+  SubscriptionsClient,
+  WsSubscriptionsClient,
+  NodeEvent
+} from "@calimero-is-near/calimero-p2p-sdk";
 import ConnectButton from '../components/lib/Connect';
 import Header from "../components/internal/Header";
 
+// Contract configuration
+const CONTRACT_ADDRESS = "0x042a429cf22dedf57d8caad50b1d2376e71dde2b1f78b570bc44a4e93d72bc04";
+const CONTRACT_ABI = [
+  {
+    "name": "create_shipment",
+    "type": "function",
+    "inputs": [
+      {
+        "name": "product_name",
+        "type": "felt"
+      },
+      {
+        "name": "product_description",
+        "type": "felt"
+      },
+      {
+        "name": "location_origin",
+        "type": "felt"
+      },
+      {
+        "name": "location_destination",
+        "type": "felt"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "shipment_id",
+        "type": "felt"
+      }
+    ],
+    "stateMutability": "external"
+  },
+  {
+    "name": "ShipmentCreated",
+    "type": "event",
+    "inputs": [
+      {
+        "name": "shipment_id",
+        "type": "felt",
+        "indexed": true
+      },
+      {
+        "name": "product_name",
+        "type": "felt",
+        "indexed": false
+      }
+    ]
+  }
+];
+
+// Initialize Calimero SDK clients
+const rpcClient: RpcClient = new JsonRpcClient(
+  process.env.NEXT_PUBLIC_RPC_BASE_URL!,
+  process.env.NEXT_PUBLIC_RPC_PATH!
+);
+
+const wsClient: SubscriptionsClient = new WsSubscriptionsClient(
+  process.env.NEXT_PUBLIC_RPC_BASE_URL!,
+  "/ws"
+);
+
+// TypeScript interfaces
 interface LocationInput {
   name: string;
   latitude: string;
@@ -23,13 +94,36 @@ interface FormData {
   isHumiditySensitive: boolean;
 }
 
+interface CreateShipmentArgs {
+  product_name: string;
+  product_description: string;
+  location_origin: string;
+  location_destination: string;
+}
+
+interface ShipmentResponse {
+  id: string;
+  product_name: string;
+  product_description: string;
+  location_origin: string;
+  location_destination: string;
+  status: string;
+}
+
 export default function CreateShipment() {
   const router = useRouter();
   const { address } = useAccount();
+  const { contract } = useContract({
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI
+  });
+
+  // State management
   const [formTouched, setFormTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [wsConnected, setWsConnected] = useState(false);
   
   const [formData, setFormData] = useState<FormData>({
     productName: '',
@@ -50,6 +144,7 @@ export default function CreateShipment() {
     isHumiditySensitive: false
   });
 
+  // Form validation
   const isFormValid = Boolean(
     formData.productName &&
     formData.description &&
@@ -63,6 +158,60 @@ export default function CreateShipment() {
     formData.arrivesOn
   );
 
+  // WebSocket connection management
+  useEffect(() => {
+    const initializeWebSocket = async () => {
+      try {
+        await wsClient.connect();
+        wsClient.subscribe([process.env.NEXT_PUBLIC_CONTEXT_ID!]);
+        wsClient.addCallback(handleWebSocketEvent);
+        setWsConnected(true);
+        console.log('WebSocket connected successfully');
+      } catch (err) {
+        console.error('WebSocket connection error:', err);
+        setError('Failed to connect to tracking system');
+      }
+    };
+
+    initializeWebSocket();
+
+    return () => {
+      if (wsConnected) {
+        wsClient.removeCallback(handleWebSocketEvent);
+        wsClient.disconnect();
+      }
+    };
+  }, []);
+
+  // WebSocket event handler
+  const handleWebSocketEvent = (event: NodeEvent) => {
+    console.log('Received WebSocket event:', event);
+    
+    if (event.type === 'ExecutionEvent') {
+      switch (event.data.kind) {
+        case 'ShipmentCreated':
+          handleShipmentCreatedEvent(event.data);
+          break;
+        case 'Error':
+          handleShipmentError(event.data);
+          break;
+      }
+    }
+  };
+
+  const handleShipmentCreatedEvent = (data: any) => {
+    setIsSuccess(true);
+    setTimeout(() => {
+      router.push('/dashboard');
+    }, 2000);
+  };
+
+  const handleShipmentError = (data: any) => {
+    setError(`Tracking system error: ${data.message || 'Unknown error'}`);
+    setIsLoading(false);
+  };
+
+  // Form change handler
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value, type } = e.target as HTMLInputElement;
     
@@ -87,33 +236,91 @@ export default function CreateShipment() {
     }
   };
 
+  // Calimero shipment creation
+  const createCalimeroShipment = async (): Promise<ShipmentResponse> => {
+    const originString = `${formData.origin.name}|${formData.origin.latitude}|${formData.origin.longitude}`;
+    const destinationString = `${formData.destination.name}|${formData.destination.latitude}|${formData.destination.longitude}`;
+
+    const params: RpcMutateParams<CreateShipmentArgs> = {
+      applicationId: process.env.NEXT_PUBLIC_CONTEXT_ID!,
+      method: "create_shipment",
+      argsJson: {
+        product_name: formData.productName,
+        product_description: formData.description,
+        location_origin: originString,
+        location_destination: destinationString,
+      }
+    };
+
+    try {
+      const response = await rpcClient.mutate<CreateShipmentArgs, ShipmentResponse>(params);
+      
+      if (!response.output) {
+        throw new Error('No response from tracking system');
+      }
+      
+      return response.output;
+    } catch (err) {
+      console.error('Calimero create_shipment error:', err);
+      throw new Error('Failed to create shipment in tracking system');
+    }
+  };
+
+  // Starknet shipment creation
+  const createStarknetShipment = async () => {
+    if (!contract) {
+      throw new Error('Contract not initialized');
+    }
+
+    const productName = ByteArray.fromString(formData.productName);
+    const description = ByteArray.fromString(formData.description);
+    const originLocation = ByteArray.fromString(
+      `${formData.origin.name}|${formData.origin.latitude}|${formData.origin.longitude}`
+    );
+    const destinationLocation = ByteArray.fromString(
+      `${formData.destination.name}|${formData.destination.latitude}|${formData.destination.longitude}`
+    );
+
+    const createShipmentCall = contract.populateTransaction["create_shipment"]({
+      product_name: productName,
+      product_description: description,
+      location_origin: originLocation,
+      location_destination: destinationLocation
+    });
+
+    const transaction = await contract.execute(createShipmentCall);
+    return transaction.wait();
+  };
+
+  // Form submission handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!address || !isFormValid) return;
+    if (!address || !isFormValid || !contract || !wsConnected) {
+      setError('Please make sure all systems are connected and form is valid');
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
 
     try {
-      // TODO: Add your Starknet contract interaction here
-      // Example:
-      // await yourContract.create_shipment({
-      //   product_name: formData.productName,
-      //   description: formData.description,
-      //   ...
-      // });
-      
-      setIsSuccess(true);
-      setTimeout(() => {
-        router.push('/dashboard');
-      }, 2000);
+      // Create shipment in Calimero first
+      const calimeroShipment = await createCalimeroShipment();
+      console.log('Calimero shipment created:', calimeroShipment);
+
+      // Then create shipment in Starknet
+      await createStarknetShipment();
+      console.log('Starknet shipment created');
+
+      // Success state will be handled by WebSocket callback
     } catch (err) {
+      console.error('Error creating shipment:', err);
       setError(err instanceof Error ? err.message : 'Failed to create shipment');
-    } finally {
       setIsLoading(false);
     }
   };
 
+  // Render wallet connection UI if not connected
   if (!address) {
     return (
       <div className="min-h-svh flex items-center justify-center">

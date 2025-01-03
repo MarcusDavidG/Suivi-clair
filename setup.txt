@@ -1,0 +1,3 @@
+id: Cszc3gwkobZrmDEbX7ysWqRfADZ6FfkVYEwhN1h7CPyZ
+App_id: BZNG7bKvasrWec2QmnbirsQka9Ps3H84HXoscEpuqxeC
+member_public_key: A5YsCBwwgrgMzQy4pcc6ELfHi1ZGF6hNMythKm4t6F5n
