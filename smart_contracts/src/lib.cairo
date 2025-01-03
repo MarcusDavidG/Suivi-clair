@@ -1,5 +1,6 @@
 // This interface allows modification and retrieval of the contract.
 #[starknet::interface]
+
 pub trait ISuiviClair<TContractState> {
     /// Create shipment
     fn create_shipment(
@@ -9,7 +10,7 @@ pub trait ISuiviClair<TContractState> {
         location_origin: ByteArray,
         location_destination: ByteArray,
     );
-    fn track_shipment(ref self: TContractState, shipment_id: felt252) -> Shipment;
+    fn track_shipment(self: @TContractState, shipment_id: felt252) -> Shipment;
 }
 
 #[derive(Drop, Serde, starknet::Store)]
@@ -57,7 +58,8 @@ mod SuiviClair {
 
 
         // Track a shipment by its ID.
-        fn track_shipment(ref self: ContractState, shipment_id: felt252) ->  Shipment{
+        
+        fn track_shipment(self: @ContractState, shipment_id: felt252) -> Shipment{
             // Retrieve the shipment from storage.
             let shipment: Shipment = self.shipments.entry(shipment_id).read();
             return shipment;
